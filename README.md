@@ -8,9 +8,9 @@ Brainfuck is an esoteric language written by Urban Muller in 1993.
 
 It assumes an infinite 'tape' that is written on by a machine. The tape is 0 initialized.
 
---------------------------
+| -------- | ------- |
 |Character | Meaning |
---------------------------
+| -------- | ------- |
 | `>` | Move the machine right once. |
 | `<` | Move the machine left once. |
 | `+` | Add one to the value of the tape where the machine is. |
