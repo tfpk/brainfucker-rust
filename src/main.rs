@@ -5,7 +5,7 @@ struct BracketPair {
     end: usize,
 }
 
-fn get_bracket_pairs(command: &String) -> Vec<BracketPair>{
+fn get_bracket_pairs(command: &str) -> Vec<BracketPair>{
     let mut bracket_pairs = Vec::new();
     let mut unclosed_stack: Vec<usize> = Vec::new();
     for (i, c) in command.chars().enumerate() {
@@ -13,16 +13,16 @@ fn get_bracket_pairs(command: &String) -> Vec<BracketPair>{
             unclosed_stack.push(bracket_pairs.len());
             bracket_pairs.push(BracketPair{start: i, end:0});
         } else if c == ']' {
-            if unclosed_stack.len() == 0 {panic!("Could not match to open brace")};
+            if unclosed_stack.is_empty() {panic!("Could not match to open brace")};
             bracket_pairs[unclosed_stack.pop().unwrap()].end = i;
         }
     }
-    if unclosed_stack.len() != 0 {panic!("Did not match everything")};
+    if ! unclosed_stack.is_empty() {panic!("Did not match everything")};
     bracket_pairs
 
 }
 
-fn find_pair(pair_list: &Vec<BracketPair>, index: usize) -> &BracketPair {
+fn find_pair(pair_list: &[BracketPair], index: usize) -> &BracketPair {
     for p in pair_list.iter() {
         if p.start == index || p.end == index {return p}
     }
@@ -46,15 +46,11 @@ fn main() {
         match command[cmd_index]{
             '>' => {
                 mem_index += 1;
-                if mem_index >= 0 {
-                    if mem_index as usize == memory_pos.len() {memory_pos.push(0)}
-                }
+                if mem_index >= 0 && mem_index as usize == memory_pos.len() {memory_pos.push(0)}
             },
             '<' => {
                 mem_index -= 1;
-                if mem_index < 0 {
-                    if (-mem_index) as usize == memory_neg.len() {memory_neg.push(0)}
-                }
+                if mem_index < 0 && (-mem_index) as usize == memory_neg.len() {memory_neg.push(0)}
             },
             '+' => if mem_index >= 0 {memory_pos[mem_index as usize] += 1} else {memory_neg[-mem_index as usize] += 1},
             '-' => if mem_index >= 0 {memory_pos[mem_index as usize] -= 1} else {memory_neg[-mem_index as usize] -= 1},
@@ -63,8 +59,8 @@ fn main() {
                 let input: Option<i32> = std::io::stdin()
                     .bytes() 
                     .next()
-                    .and_then(|result| result.ok())
-                    .map(|byte| byte as i32);
+                    .and_then(std::result::Result::ok)
+                    .map(i32::from);
                     if mem_index >= 0 { memory_pos[mem_index as usize] = input.unwrap(); }
             },
             '[' =>  {
